@@ -118,26 +118,26 @@ async function searchanybooks(req,res) {
     }
 }
 
-async function searchbooks(req,res){
-    try{
-       // const {id,name,category,quantity,available}=req.body
-        const id=req.params.id
+// async function searchbooks(req,res){
+//     try{
+//        // const {id,name,category,quantity,available}=req.body
+//         const id=req.params.id
     
-        //const result=books.filter(book=>book.name==name)
-        const result=await pool.query("select * from bookdetails where id=$1",[id])
-       console.log(result)
-        if(result.rows.length>0){
-          res.status(200).json(result.rows[0])
-        }
-        else{
-            res.status(404).send("Book not found!")
-        }
-    }
-    catch(error){
-        console.log(error)
-        res.status(500).send("Internal Server Error")
-    }
-}
+//         //const result=books.filter(book=>book.name==name)
+//         const result=await pool.query("select * from bookdetails where id=$1",[id])
+//        console.log(result)
+//         if(result.rows.length>0){
+//           res.status(200).json(result.rows[0])
+//         }
+//         else{
+//             res.status(404).send("Book not found!")
+//         }
+//     }
+//     catch(error){
+//         console.log(error)
+//         res.status(500).send("Internal Server Error")
+//     }
+// }
 // async function borrowbooks(req,res){
 //     try{
 //         //const name=req.body
@@ -163,4 +163,4 @@ async function searchbooks(req,res){
 //     }
 // }
 
-module.exports={getallbooks,addbooks,deletebooks,getbooks,updatebooks,searchanybooks,searchbooks}
+module.exports={getallbooks,addbooks,deletebooks,getbooks,updatebooks,searchanybooks}

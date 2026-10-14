@@ -14,22 +14,8 @@ async function addToCart(req, res) {
             "SELECT * FROM cart WHERE user_id = $1 AND book_id = $2",
             [req.session.userId, book_id]
         );
-        const book = await db.one(
-            `SELECT title, stock FROM bookdetails WHERE id = $1`,[book_id]);
-        const currentQuantity =
-            result.length > 0 ? Number(result[0].quantity) : 0;
-
-        // Prevent quantity from exceeding stock
-        if (currentQuantity >= Number(book.stock)) {
-            return res.status(400).json({
-                message: `Maximum limit reached! Only ${book.stock} copies of "${book.title}" are available.`
-            });
-        }
-        
-
 
         if (result.length > 0) {
-
 
             await db.query(
                 "UPDATE cart SET quantity = quantity + 1 WHERE user_id = $1 AND book_id = $2",
@@ -72,7 +58,6 @@ async function getCart(req, res) {
                 cart.book_id,
                 cart.quantity,
                 bookdetails.title,
-                bookdetails.stock,
                 bookdetails.author,
                 bookdetails.price,
                 bookdetails.image
@@ -154,9 +139,7 @@ async function checkOut(req,res){
              FROM cart c JOIN bookdetails b ON c.book_id = b.id
              WHERE c.user_id = $1`,[userId]);
         if(cartItems.length===0){
-            return res.status(400).json({
-                message:"Cart is Empty"
-            })
+            return res.status(400).send("Cart is Empty")
         }
         for (const item of cartItems) {
             if (item.quantity > item.stock) {
@@ -206,9 +189,7 @@ async function checkOut(req,res){
     }
     catch(error){
         console.log(error.res)
-        res.status(500).json({
-            message:"Server Error:Failed to CheckOut"
-        })
+        res.status(500).send("Internal Server Error")
     }
 }
 async function getPurchases(req, res) {

@@ -37,7 +37,7 @@ const userReducer=(state=initialState,action)=>{
         category: "",
         islogin: false
       };
-      case "SESSION_SUCCESS":   
+      case "SESSION_SUCCESS":
     return {
         ...state,
         islogin: true,

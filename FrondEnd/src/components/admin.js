@@ -184,7 +184,7 @@ function Admin() {
 
                 <Card
 
-                  className={book.stock < 5 ? "low-stock" : "book-card"}
+                  className="book-card"
 
                   hoverable
 
@@ -236,10 +236,7 @@ function Admin() {
 
                   <div className="stock">
 
-                     {book.stock>0?(<>Stock:{book.stock}</>): (
-                    <span style={{ color: "red", fontWeight: "bold" ,fontSize:"20px"}}>
-                   Out of Stock
-                    </span>)}
+                    Stock: {book.stock}
 
                   </div>
 
