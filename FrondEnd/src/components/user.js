@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Row, Col, Button,Drawer, message, Space,Badge,Typography } from "antd";
+import { Card, Row, Col, Button,Drawer,notification, message, Space,Badge,Typography } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import axios from "axios";
@@ -42,6 +42,7 @@ class User extends Component {
         } catch (error) {
 
             console.log(error);
+            notification.error( error.response?.data || "Action Failed!" );
 
         }
 
@@ -87,10 +88,15 @@ class User extends Component {
         message.success("Books Purchased Successfully")
 
     } catch (error) {
-
-        console.log(error.response);
-
+         
+        notification.error( error.response?.data || "Checkout Failed!" );
     }
+
+    
+        
+       
+        
+    
 };
 
 handleDelete = async (book_id) => {
@@ -119,6 +125,7 @@ handleDelete = async (book_id) => {
             <div className="user-page">
 
                 <UserTopBar />
+               
             <div className="user-actions">
             {this.state.isSearching && (
                 <Button
@@ -204,13 +211,21 @@ handleDelete = async (book_id) => {
                                     </p>
 
                                     <p>
-                                        Stock: {book.stock}
-                                    </p>
+                                       {book.stock<5?(book.stock<1)?(
+                                        <Typography.Text type="danger">Oops! Not Available Now</Typography.Text>
+                                        ):(<>Stock:{book.stock} <Typography.Text type="warning">Only few Available! </Typography.Text></>)
 
-                                    <Button type="primary"
+                                       :<>Stock:{book.stock}</>}
+
+                  
+                                    </p>
+                                    {book.stock>0 &&
+                                        <Button type="primary"
                                              onClick={() => this.addToCart(book.id)}>
                                         Add to Cart
                                     </Button>
+                                    }
+                                    
 
                                 </Card>
 
@@ -229,18 +244,30 @@ handleDelete = async (book_id) => {
             {this.state.cart.map((item) => (
             <Card key={item.id} style={{ marginBottom: "15px" }}>
                 <h3>{item.title}</h3>
-                <p>Author: {item.author}</p>
+               
                 <p>Price: ₹{item.price}</p>
                 <p>Quantity: {item.quantity}</p>
-                <p>Total: ₹{item.price * item.quantity}</p>
-                <Button type="primary" onClick={()=>this.handleDelete(item.book_id)}>❌</Button>
-                <hr />
+                
+
+                {item.stock === 0 ? (
+                            <Typography.Text type="danger" strong>
+                                Out of Stock
+                            </Typography.Text>
+                            ) : item.quantity > item.stock ? (
+                                <Typography.Text type="danger" strong>
+                                 Quantity exceeds available stock!
+                                 <p>Available: {item.stock}</p>
+                                </Typography.Text>
+                            ) : null}
+                    <p>Total: ₹{item.price * item.quantity}</p>
+                    <Button type="primary" onClick={()=>this.handleDelete(item.book_id)}>❌</Button>
+                    <hr />
             </Card>))}
-    <h2> Total Amount: ₹
-        {this.state.cart.reduce(
-            (total, item) =>
-                total + item.price * item.quantity,0)}
-    </h2>
+                <h2> Total Amount: ₹
+                    {this.state.cart.reduce(
+                     (total, item) =>
+                            total + item.price * item.quantity,0)}
+                </h2>
     <Button
         type="primary"
         block
