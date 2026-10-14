@@ -3,7 +3,7 @@ const { Pool }= require("pg")
     user: "postgres",
     host: "localhost",
     database: "library",
-    password: "Athira@10",
+    password: "",
     port: 5433
 });
 module.exports=pool
